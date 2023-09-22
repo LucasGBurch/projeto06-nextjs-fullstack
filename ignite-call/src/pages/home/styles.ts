@@ -15,13 +15,13 @@ export const Hero = styled('div', {
   padding: '0 $10',
 
   // Estilizando o Heading sem precisar aplicar as="h1" no componente e dar problemas eventuais ao mudar os estilos
-  [`${Heading}`]: {
+  [`> ${Heading}`]: {
     '@media(max-width: 600px)': {
       fontSize: '$6xl',
     },
   },
-
-  [`${Text}`]: {
+  // > é para aplicar só nos que estão dentro do componente Hero
+  [`> ${Text}`]: {
     maskType: '$2',
     color: '$gray200',
   },
