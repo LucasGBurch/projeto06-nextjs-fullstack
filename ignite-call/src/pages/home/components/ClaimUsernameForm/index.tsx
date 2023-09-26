@@ -28,7 +28,7 @@ export function ClaimUsernameForm() {
   })
 
   async function handleClaimUsername(data: ClaimUsernameFormData) {
-    console.log(data.username)
+    // console.log(data.username)
   }
 
   return (
