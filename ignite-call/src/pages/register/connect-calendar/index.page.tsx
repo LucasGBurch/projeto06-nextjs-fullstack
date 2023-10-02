@@ -21,7 +21,7 @@ export default function Register() {
 
       <ConnectBox>
         <ConnectItem>
-          <Text>Google Agenda</Text>
+          <Text>Google Calendar</Text>
           <Button variant="secondary" size="sm">
             Conectar
             <ArrowRight />
