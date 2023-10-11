@@ -8,7 +8,7 @@ import {
 } from '@ignite-ui/react'
 import { ArrowRight } from 'phosphor-react'
 import { z } from 'zod'
-import { useFieldArray, useForm } from 'react-hook-form'
+import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { Container, Header } from '../styles' // Reaproveitando do componente acima
 import {
   IntervalBox,
@@ -27,6 +27,7 @@ export default function TimeIntervals() {
     handleSubmit,
     control,
     formState: { isSubmitted, errors },
+    watch,
   } = useForm({
     defaultValues: {
       intervals: [
@@ -48,6 +49,8 @@ export default function TimeIntervals() {
     name: 'intervals',
   })
 
+  const intervals = watch('intervals')
+
   async function handleSetTimeIntervals() {}
 
   return (
@@ -68,7 +71,21 @@ export default function TimeIntervals() {
             return (
               <IntervalItem key={field.id} /* id gerado automaticamente */>
                 <IntervalDay>
-                  <Checkbox />
+                  <Controller
+                    name={`intervals.${index}.enabled`}
+                    control={control}
+                    render={({ field }) => {
+                      return (
+                        <Checkbox
+                          onCheckedChange={(checked) => {
+                            field.onChange(checked === true)
+                          }}
+                          checked={field.value}
+                        />
+                      )
+                    }}
+                  />
+
                   <Text>{weekDays[field.weekDay]}</Text>
                 </IntervalDay>
                 <IntervalInputs>
@@ -76,6 +93,7 @@ export default function TimeIntervals() {
                     size="sm"
                     type="time"
                     step={60}
+                    disabled={intervals[index].enabled === false}
                     {...register(`intervals.${index}.startTime`)}
                     crossOrigin={undefined}
                   />
@@ -83,6 +101,7 @@ export default function TimeIntervals() {
                     size="sm"
                     type="time"
                     step={60}
+                    disabled={intervals[index].enabled === false}
                     {...register(`intervals.${index}.endTime`)}
                     crossOrigin={undefined}
                   />
