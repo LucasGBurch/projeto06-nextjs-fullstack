@@ -20,6 +20,7 @@ import {
   IntervalItem,
 } from './styles'
 import { getWeekDays } from '@/src/utils/get-week-days'
+import { convertTimeStringToMinutes } from '@/src/utils/convert-time-string-to-minutes'
 
 const timeIntervalsFormSchema = z.object({
   intervals: z
@@ -35,10 +36,33 @@ const timeIntervalsFormSchema = z.object({
     .transform((intervals) => intervals.filter((interval) => interval.enabled))
     .refine((intervals) => intervals.length > 0, {
       message: 'Você precisa selecionar pelo menos um dia da semana!',
-    }),
+    })
+    .transform((intervals) => {
+      return intervals.map((interval) => {
+        return {
+          // Novo objeto para cada um dos intervalos
+          weekDay: interval.weekDay,
+          startTimeInMinutes: convertTimeStringToMinutes(interval.startTime),
+          endTimeInMinutes: convertTimeStringToMinutes(interval.endTime),
+        }
+      })
+    }) // Ajuste para ter diferença de horas e o início ser menos que o fim
+    .refine(
+      (intervals) => {
+        return intervals.every(
+          (interval) =>
+            interval.endTimeInMinutes - 60 >= interval.startTimeInMinutes,
+        )
+      },
+      {
+        message:
+          'O horário de término deve ser pelo menos 1h distante do início',
+      },
+    ),
 })
 
-type TimeIntervalsFormData = z.infer<typeof timeIntervalsFormSchema>
+type TimeIntervalsFormInput = z.input<typeof timeIntervalsFormSchema> // Por causa das transformações, precisamos ter este type do input!!
+type TimeIntervalsFormOutput = z.output<typeof timeIntervalsFormSchema> // Tipo final DEPOIS DAS TRANSFORMAÇÕES (Output, por isso trocamos o infer)
 
 export default function TimeIntervals() {
   const {
@@ -47,10 +71,11 @@ export default function TimeIntervals() {
     control,
     watch,
     formState: { isSubmitting, errors },
-  } = useForm({
+  } = useForm<TimeIntervalsFormInput>({
     resolver: zodResolver(timeIntervalsFormSchema),
     defaultValues: {
       intervals: [
+        // Tipo inicial ANTES DAS TRANSFORMAÇÕES (Input)
         { weekDay: 0, enabled: false, startTime: '08:00', endTime: '18:00' },
         { weekDay: 1, enabled: true, startTime: '08:00', endTime: '18:00' },
         { weekDay: 2, enabled: true, startTime: '08:00', endTime: '18:00' },
@@ -71,8 +96,10 @@ export default function TimeIntervals() {
 
   const intervals = watch('intervals')
 
-  async function handleSetTimeIntervals(data: TimeIntervalsFormData) {
-    console.log(data)
+  async function handleSetTimeIntervals(data: unknown) {
+    const formData = data as TimeIntervalsFormOutput // Para corrigir bug das versões recentes
+
+    console.log(formData)
   }
 
   return (
