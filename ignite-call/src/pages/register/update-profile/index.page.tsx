@@ -1,20 +1,28 @@
-import { Button, Heading, MultiStep, Text, TextArea } from '@ignite-ui/react'
+import {
+  Avatar,
+  Button,
+  Heading,
+  MultiStep,
+  Text,
+  TextArea,
+} from '@ignite-ui/react'
 import { ArrowRight } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { FormAnnotation, ProfileBox } from './styles'
 import { Container, Header } from '../styles'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { api } from '@/src/lib/axios'
 import { useSession } from 'next-auth/react'
 import { GetServerSideProps } from 'next'
 import { getServerSession } from 'next-auth'
 import { buildNextAuthOptions } from '../../api/auth/[...nextauth].api'
 
-const UpdateProfileSchema = z.object({
+const updateProfileSchema = z.object({
   bio: z.string(),
 })
 
-type UpdateProfileData = z.infer<typeof UpdateProfileSchema>
+type UpdateProfileData = z.infer<typeof updateProfileSchema>
 
 export default function UpdateProfile() {
   const {
@@ -22,14 +30,17 @@ export default function UpdateProfile() {
     handleSubmit,
     formState: { isSubmitting },
   } = useForm<UpdateProfileData>({
-    resolver: zodResolver(UpdateProfileSchema),
+    resolver: zodResolver(updateProfileSchema),
   })
 
   const session = useSession()
-  console.log(session)
+  // console.log(session)
 
   async function handleUpdateProfile(data: UpdateProfileData) {
-    console.log(data)
+    // console.log(data)
+    await api.put('/users/profile', {
+      bio: data.bio,
+    })
   }
 
   return (
@@ -41,12 +52,17 @@ export default function UpdateProfile() {
           editar essas informações depois
         </Text>
 
-        <MultiStep size={4} currentStep={1} />
+        <MultiStep size={4} currentStep={4} />
       </Header>
 
       <ProfileBox as="form" onSubmit={handleSubmit(handleUpdateProfile)}>
         <label>
           <Text size="sm">Foto de perfil</Text>
+          <Avatar
+            src={session.data?.user.avatar_url}
+            referrerPolicy="no-referrer"
+            alt={session.data?.user.name}
+          />
         </label>
 
         <label>
