@@ -91,7 +91,7 @@ export default function TimeIntervals() {
 
   const router = useRouter()
 
-  const weekDays = getWeekDays()
+  const weekDays = getWeekDays() // Para esta parte funcionar, as props do método precisaram inicializar com = {}, para poder aplicar o estilo "short" no calendário principal, em schedule
 
   const { fields } = useFieldArray({
     control,

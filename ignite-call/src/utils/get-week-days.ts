@@ -2,7 +2,7 @@ interface GetWeekDaysParams {
   short?: boolean
 }
 
-export function getWeekDays({ short = false }: GetWeekDaysParams) {
+export function getWeekDays({ short = false }: GetWeekDaysParams = {}) {
   const formatter = new Intl.DateTimeFormat('pt-BR', { weekday: 'long' }) // long == escrito por extenso
 
   // keys() retorna os índices de cada undefined desse array. Essa função vai funcionar através de índice [] em vez de parâmetros na chamada:
