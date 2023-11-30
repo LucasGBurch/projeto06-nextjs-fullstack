@@ -14,7 +14,7 @@ const claimUsernameFormSchema = z.object({
       message: 'O usuário pode ter apenas letras e hifens',
     })
     .transform((username) => username.toLowerCase()),
-  // Regex: Começa (^) e termina ($) com qualquer caractere de a até z cpm hifen (escapado para reconhecer hifen e não intervalo), uma ou mais vezes. O i significa case-insensitive
+  // Regex: Começa (^) e termina ($) com qualquer caractere de a até z com hifen (escapado para reconhecer hifen e não intervalo), uma ou mais vezes. O i significa case-insensitive
 })
 
 type ClaimUsernameFormData = z.infer<typeof claimUsernameFormSchema>

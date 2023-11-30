@@ -23,8 +23,8 @@ export default function Home() {
         <Image
           src={previewImage}
           height={400}
-          quality={100}
-          priority
+          quality={100} // Padrão Next é 80
+          priority // Prioridade de carregamento
           alt="Calendário simbolizando aplicação em funcionamento"
         />
       </Preview>
