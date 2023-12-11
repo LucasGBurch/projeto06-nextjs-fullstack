@@ -21,7 +21,7 @@ export function buildNextAuthOptions(
           },
         },
 
-        profile: (profile: GoogleProfile) => {
+        profile(profile: GoogleProfile) {
           return {
             id: profile.sub,
             name: profile.name,
