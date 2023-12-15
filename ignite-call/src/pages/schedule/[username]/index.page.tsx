@@ -8,7 +8,7 @@ interface ScheduleProps {
   user: {
     name: string
     bio: string
-    // avatarUrl: string // Não vou chegar a usar o avatarUrl aqui por estar com aquele bug do google
+    avatarUrl: string
   }
 }
 
@@ -16,7 +16,7 @@ export default function Schedule({ user }: ScheduleProps) {
   return (
     <Container>
       <UserHeader>
-        <Avatar src="https://github.com/LucasGBurch.png" />
+        <Avatar src={user.avatarUrl} />
         <Heading>{user.name}</Heading>
         <Text>{user.bio}</Text>
       </UserHeader>
@@ -26,10 +26,10 @@ export default function Schedule({ user }: ScheduleProps) {
   )
 }
 
-// Página estática com parâmetro dinâmico, como nosso username, precisa deste Paths também
+// Página estática com parâmetro dinâmico, como nosso username, precisa deste Paths também. Sem isto, a build não saberia os parâmetros para gerar desde o primeiro momento, quando ainda não tem user logado
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
-    paths: [], // Gera o param conforme pessoas vão acessando
+    paths: [], // Gera o param conforme pessoas vão acessando. Só quando u user acessa
     fallback: 'blocking',
   }
 }

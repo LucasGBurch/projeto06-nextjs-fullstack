@@ -5,7 +5,7 @@ interface GetWeekDaysParams {
 export function getWeekDays({ short = false }: GetWeekDaysParams = {}) {
   const formatter = new Intl.DateTimeFormat('pt-BR', { weekday: 'long' }) // long == escrito por extenso
 
-  // keys() retorna os índices de cada undefined desse array. Essa função vai funcionar através de índice [] em vez de parâmetros na chamada:
+  // keys() retorna os índices de cada undefined desse array. Essa função vai funcionar através de índice [] em vez de parâmetros na chamada: 0, 1, 2, 3, 4, 5, 6
   return Array.from(Array(7).keys())
     .map((day) => formatter.format(new Date(Date.UTC(2021, 5, day))))
     .map((weekDay) => {

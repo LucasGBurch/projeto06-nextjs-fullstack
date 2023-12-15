@@ -128,6 +128,7 @@ export default function TimeIntervals() {
               <IntervalItem key={field.id} /* id gerado automaticamente */>
                 <IntervalDay>
                   <Controller
+                    // Controller: serve para elementos em tela que vão inserir info no form sem ser um elemento nativo do HTML, como esse Checkbox do design system
                     name={`intervals.${index}.enabled`}
                     control={control}
                     render={({ field }) => {
@@ -135,7 +136,7 @@ export default function TimeIntervals() {
                         <Checkbox
                           onCheckedChange={(checked) => {
                             field.onChange(checked === true)
-                          }}
+                          }} // Se for true aplica, senão é false
                           checked={field.value}
                         />
                       )
