@@ -3,6 +3,7 @@ interface GetWeekDaysParams {
 }
 
 export function getWeekDays({ short = false }: GetWeekDaysParams = {}) {
+  // = {} para fazer o short opcional e não bugar no calendário
   const formatter = new Intl.DateTimeFormat('pt-BR', { weekday: 'long' }) // long == escrito por extenso
 
   // keys() retorna os índices de cada undefined desse array. Essa função vai funcionar através de índice [] em vez de parâmetros na chamada: 0, 1, 2, 3, 4, 5, 6

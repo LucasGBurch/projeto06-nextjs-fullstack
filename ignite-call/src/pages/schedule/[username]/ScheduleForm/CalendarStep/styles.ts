@@ -29,7 +29,8 @@ export const TimePicker = styled('div', {
   padding: '$6 $6 0',
   overflowY: 'scroll',
 
-  position: 'absolute',
+  // Para o scroll funcionar em sintonia com a altura da div do Container:
+  position: 'absolute', // funciona com o Container sendo relative
   top: 0,
   bottom: 0,
   right: 0,

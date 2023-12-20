@@ -15,6 +15,7 @@ export const CalendarHeader = styled('div', {
 
 export const CalendarTitle = styled(Text, {
   fontWeight: '$medium',
+  textTransform: 'capitalize',
 
   span: {
     color: '$gray200',
@@ -27,7 +28,7 @@ export const CalendarActions = styled('div', {
   color: '$gray200',
 
   button: {
-    all: 'unset',
+    all: 'unset', // tira todas as propriedades do elemento para editarmos abaixo:
     cursor: 'pointer',
     lineHeight: 0,
     borderRadius: '$sm',
@@ -75,7 +76,7 @@ export const CalendarBody = styled('table', {
 export const CalendarDay = styled('button', {
   all: 'unset', // Tira todas as estilizações para reestilizar
   width: '100%',
-  aspectRatio: '1 / 1',
+  aspectRatio: '1 / 1', // Obriga a ter mesma altura e largura
   background: '$gray600',
   textAlign: 'center',
   cursor: 'pointer',
