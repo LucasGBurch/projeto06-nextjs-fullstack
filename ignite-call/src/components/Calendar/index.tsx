@@ -8,7 +8,7 @@ import {
   CalendarTitle,
 } from './styles'
 import { getWeekDays } from '@/src/utils/get-week-days'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import dayjs from 'dayjs'
 
 export function Calendar() {
@@ -32,6 +32,33 @@ export function Calendar() {
 
   const currentMonth = currentDate.format('MMMM') // mês por extenso
   const currentYear = currentDate.format('YYYY')
+
+  // [ [1, 2, 3] [4, 5, 6, 7, 8, 9, 10]] Array de semanas com dias:
+  const calendarWeeks = useMemo(() => {
+    // Memoizando o retorno para calcular os dias somente quando for realmente necessário, em vez de sempre que o componente renderizar
+    const daysInMonthArray = Array.from({
+      length: currentDate.daysInMonth(),
+    }).map((_, i) => {
+      // Valor _ não importa, aqui precisamos do índice i, que começa em 0, por isso o + 1. Usamos 'date' para pegar os dias em vez do 'day', que pega o dia DA SEMANA, por mais estranho que pareça:
+      return currentDate.set('date', i + 1)
+    })
+
+    // Número de dias que faltaram para preencher a linha da semana:
+    const firstWeekDay = currentDate.get('day')
+
+    // Array para os dias do mês anterior, para completar a linha:
+    const previousMonthFillArray = Array.from({
+      length: firstWeekDay,
+    })
+      .map((_, i) => {
+        return currentDate.subtract(i + 1, 'day')
+      })
+      .reverse()
+
+    return [...previousMonthFillArray, ...daysInMonthArray]
+  }, [currentDate])
+
+  console.log(calendarWeeks)
 
   return (
     <CalendarContainer>
