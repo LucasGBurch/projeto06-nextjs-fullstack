@@ -7,9 +7,10 @@ import {
   TimePickerItem,
   TimePickerList,
 } from './styles'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { api } from '@/src/lib/axios'
 import { useRouter } from 'next/router'
+import { useQuery } from '@tanstack/react-query'
 
 interface Availability {
   possibleTimes: number[]
@@ -18,7 +19,7 @@ interface Availability {
 
 export function CalendarStep() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-  const [availability, setAvailability] = useState<Availability | null>(null)
+  // const [availability, setAvailability] = useState<Availability | null>(null)
 
   const router = useRouter()
 
@@ -30,23 +31,42 @@ export function CalendarStep() {
     ? dayjs(selectedDate).format('DD[ de ]MMMM')
     : null
 
-  // Carregar os dados da API toda a vez que selectedDate mudar:
-  useEffect(() => {
-    if (!selectedDate) {
-      return
-    }
+  // Carregar os dados da API toda a vez que selectedDate mudar, mas trocaremos o useEffect e o uso de api normal pelo react-query, para melhorar a performance para carregar os dados:
 
-    api
-      .get(`/users/${username}/availability`, {
+  const selectedDateWithoutTime = selectedDate
+    ? dayjs(selectedDate).format('YYYY-MM-DD')
+    : null
+
+  const { data: availability } = useQuery<Availability>({
+    queryKey: ['availability', selectedDateWithoutTime],
+    queryFn: async () => {
+      const response = await api.get(`/users/${username}/availability`, {
         params: {
-          date: dayjs(selectedDate).format('YYYY-MM-DD'),
+          date: selectedDateWithoutTime,
         },
       })
-      .then((response) => {
-        // console.log(response.data)
-        setAvailability(response.data)
-      })
-  }, [selectedDate, username])
+
+      return response.data
+    },
+    enabled: !!selectedDate, // Executar só se houver selectedDate
+  })
+
+  // useEffect(() => {
+  //   if (!selectedDate) {
+  //     return
+  //   }
+
+  //   api
+  //     .get(`/users/${username}/availability`, {
+  //       params: {
+  //         date: dayjs(selectedDate).format('YYYY-MM-DD'),
+  //       },
+  //     })
+  //     .then((response) => {
+  //       // console.log(response.data)
+  //       setAvailability(response.data)
+  //     })
+  // }, [selectedDate, username])
 
   return (
     <Container isTimePickerOpen={isDateSelected}>
