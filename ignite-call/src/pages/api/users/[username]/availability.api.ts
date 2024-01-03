@@ -13,7 +13,7 @@ export default async function handle(
 
   const username = String(req.query.username)
   const { date } = req.query
-  // Intenção da Rota das horas da data: http://localhost:3000/api/users/lucasgb/availability?date=2023-12-26
+  // Intenção da Rota das horas da data: http://localhost:3000/api/users/lucasgb/availability?date=YYYY-MM-DD
 
   if (!date) {
     return res.status(400).json({ message: 'Date not provided.' })
@@ -34,7 +34,7 @@ export default async function handle(
 
   if (isPastDate) {
     // Se é data que já passou
-    return res.json({ possibleTimes: [], availability: [] })
+    return res.json({ possibleTimes: [], availableTimes: [] })
   }
 
   const userAvailability = await prisma.userTimeInterval.findFirst({
@@ -46,7 +46,7 @@ export default async function handle(
 
   if (!userAvailability) {
     // Se não retornou horário
-    return res.json({ possibleTimes: [], availability: [] })
+    return res.json({ possibleTimes: [], availableTimes: [] })
   }
 
   const { time_start_in_minutes, time_end_in_minutes } = userAvailability
@@ -76,9 +76,13 @@ export default async function handle(
   })
 
   const availableTimes = possibleTimes.filter((time) => {
-    return !blockedTimes.some(
+    const isTimeBlocked = blockedTimes.some(
       (blockedTime) => blockedTime.date.getHours() === time,
     )
+
+    const isTimeInPast = referenceDate.set('hour', time).isBefore(new Date())
+
+    return !isTimeBlocked && !isTimeInPast
   })
 
   return res.json({ possibleTimes, availableTimes })

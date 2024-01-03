@@ -26,11 +26,11 @@ type CalendarWeeks = CalendarWeek[]
 
 interface BlockedDates {
   blockedWeekDays: number[]
+  blockedDates: number[]
 }
 
 interface CalendarProps {
   selectedDate?: Date | null
-  blockedDates: Date[]
   onDateSelected: (date: Date) => void
 }
 
@@ -80,6 +80,9 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
 
   // [ [1, 2, 3] [4, 5, 6, 7, 8, 9, 10]] Array de semanas com dias:
   const calendarWeeks = useMemo(() => {
+    if (!blockedDates) {
+      return []
+    }
     // Memoizando o retorno para calcular os dias somente quando for realmente necessário, em vez de sempre que o componente renderizar
     const daysInMonthArray = Array.from({
       length: currentDate.daysInMonth(),
@@ -124,7 +127,7 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
           // Se a data do fim do dia for anterior a uma new Date() atual, ou seja, já passou, então a data é desabilitada:
           disabled:
             date.endOf('day').isBefore(new Date()) ||
-            blockedDates?.blockedWeekDays.includes(date.get('day')),
+            blockedDates.blockedWeekDays.includes(date.get('day')),
         }
       }),
       ...nextMonthFillArray.map((date) => {
